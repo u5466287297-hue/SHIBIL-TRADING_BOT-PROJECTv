@@ -30,7 +30,15 @@ def fetch_data(symbol="BTC-USD", interval="1m", period="1d"):
     return data
 
 def calculate_indicators(data):
-    data["EMA5"] = ta.trend.EMAIndicator(data["Close"], 5).ema_indicator()
+    close = data["Close"].squeeze()  # превръща (n,1) → (n,)
+data["EMA5"] = ta.trend.EMAIndicator(close, 5).ema_indicator()
+data["EMA20"] = ta.trend.EMAIndicator(close, 20).ema_indicator()
+data["RSI"] = ta.momentum.RSIIndicator(close, 14).rsi()
+macd = ta.trend.MACD(close)
+data["MACD"] = macd.macd()
+data["MACD_SIGNAL"] = macd.macd_signal()
+data["ADX"] = ta.trend.ADXIndicator(data["High"].squeeze(), data["Low"].squeeze(), close, 14).adx()
+
     data["EMA20"] = ta.trend.EMAIndicator(data["Close"], 20).ema_indicator()
     data["RSI"] = ta.momentum.RSIIndicator(data["Close"], 14).rsi()
     data["MACD"] = ta.trend.MACD(data["Close"]).macd()
