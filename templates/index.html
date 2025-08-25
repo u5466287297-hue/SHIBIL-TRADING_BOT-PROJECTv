@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Trading Bot Pro v4.3</title>
+  <style>
+    body { background:#0d0d0d; color:#0ff; font-family:Arial; text-align:center; }
+    .signal { font-size:24px; margin:20px; }
+    .buy { color:lime; }
+    .sell { color:red; }
+    .prepare { color:yellow; }
+  </style>
+  <script>
+    async function refreshSignals(){
+      let res = await fetch("/get_signals");
+      let data = await res.json();
+      let out = "";
+      if(data.prepare){ out += "<div class='signal prepare'>⚠ Prepare " + data.prepare + "</div>"; }
+      if(data.signal){ out += "<div class='signal " + data.signal.toLowerCase() + "'>✅ " + data.signal + "</div>"; }
+      document.getElementById("signals").innerHTML = out;
+    }
+    setInterval(refreshSignals, 60000);
+    window.onload = refreshSignals;
+  </script>
+</head>
+<body>
+  <h1>Trading Bot Pro v4.3</h1>
+  <div id="signals">Loading...</div>
+  <button onclick="refreshSignals()">Обнови сега</button>
+</body>
+</html>
